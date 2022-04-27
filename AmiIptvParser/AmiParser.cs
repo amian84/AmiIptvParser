@@ -99,9 +99,14 @@ public class AmiParser
         return Instance.ChannelsList;
     }
 
-    public static void ProcessList()
+    public static void ProcessListSync()
     {
         Instance.RefreshList().Wait();
+    }
+    
+    public static async Task ProcessListAsync()
+    {
+        await Instance.RefreshList();
     }
 
     public static ChStatus GetStatus()
