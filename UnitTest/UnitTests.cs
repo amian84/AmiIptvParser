@@ -28,28 +28,28 @@ public class Tests
     [Test]
     public void ExistAnyChannel()
     {
-        AmiParser.ProcessList();
+        AmiParser.ProcessListSync();
         Assert.True(AmiParser.GetAllChannels().Any());
     }
     
     [Test]
     public void GetChannelByNumber()
     {
-        AmiParser.ProcessList();
+        AmiParser.ProcessListSync();
         Assert.AreEqual(AmiParser.GetChannelNumber(3).Title, "Canal4");
     }
 
     [Test]
     public void CheckGroups()
     {
-        AmiParser.ProcessList();
+        AmiParser.ProcessListSync();
         Assert.AreEqual(AmiParser.GetAllGroups().Count(), 4);
     }
 
     [Test]
     public void CheckShows()
     {
-        AmiParser.ProcessList();
+        AmiParser.ProcessListSync();
         Assert.AreEqual(AmiParser.GetAllShowsGroups().Count(), 2);
     }
 
@@ -123,7 +123,7 @@ public class Tests
             Assert.AreEqual(status, ChStatus.Initialize);
             are.Set();
         });
-        AmiParser.ProcessList();
+        AmiParser.ProcessListAsync();
         var wasSignaled = are.WaitOne(timeout: TimeSpan.FromSeconds(5));
         Assert.True(wasSignaled);
     }
