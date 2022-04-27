@@ -4,6 +4,17 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.0.2</PackageVersion>
+        <Title>AmiIptvParser</Title>
+        <Authors>David Amian</Authors>
+        <Description>A IptvParser library for parser and manage iptv list in m3u8 format</Description>
+        <Copyright>GPL-3.0 License</Copyright>
+        <PackageProjectUrl>https://github.com/amian84/AmiIptvParser</PackageProjectUrl>
+        <PackageLicenseUrl></PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/amian84/AmiIptvParser</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PackageReleaseNotes>First version</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
