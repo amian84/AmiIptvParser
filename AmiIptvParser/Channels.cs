@@ -1,5 +1,6 @@
 ﻿using PlaylistsNET.Content;
 using PlaylistsNET.Models;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Timers;
 
@@ -116,12 +117,15 @@ internal class Channels
     {
         InitializeProcess();
         var parser = PlaylistParserFactory.GetPlaylistParser(".m3u");
-        CancellationToken cancellationToken = default;
+        var request = new HttpRequestMessage(HttpMethod.Get, PlayListUrl);
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
+        request.Headers.Add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0");
+        
         M3uPlaylist m3UList;
         using (var client = new HttpClient())
         {
-            var response = await client.GetStreamAsync(PlayListUrl, cancellationToken);
-            m3UList = (M3uPlaylist)parser.GetFromStream(response);
+            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead); 
+            m3UList = (M3uPlaylist)parser.GetFromStream(await response.Content.ReadAsStreamAsync());
         }
 
         if (m3UList == null)
