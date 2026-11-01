@@ -12,7 +12,15 @@ namespace UnitTest;
 
 public class Tests
 {
-    
+    // run.mocky.io no longer serves this playlist (TLS / connection failure).
+    // ProcessListSync/Async are the only callers that download it. Initializer does not.
+    // Ignored until a later phase replaces them with an embedded M3U fixture.
+    // The test bodies stay so the expected playlist shape is still visible.
+    private const string DeadMockyFixture =
+        "Ignored: downloads https://run.mocky.io/v3/e68af937-3b8f-4c8a-91d6-ebe27ed1c17b, "
+        + "which no longer serves the M3U fixture (TLS/connection failure). "
+        + "Kept until an in-memory playlist replaces the network call. Parser code is unchanged.";
+
     [SetUp]
     public void Setup()
     {
@@ -26,6 +34,7 @@ public class Tests
     }
 
     [Test]
+    [Ignore(DeadMockyFixture)]
     public void ExistAnyChannel()
     {
         AmiParser.ProcessListSync();
@@ -33,6 +42,7 @@ public class Tests
     }
     
     [Test]
+    [Ignore(DeadMockyFixture)]
     public void GetChannelByNumber()
     {
         AmiParser.ProcessListSync();
@@ -40,6 +50,7 @@ public class Tests
     }
 
     [Test]
+    [Ignore(DeadMockyFixture)]
     public void CheckGroups()
     {
         AmiParser.ProcessListSync();
@@ -47,6 +58,7 @@ public class Tests
     }
 
     [Test]
+    [Ignore(DeadMockyFixture)]
     public void CheckShows()
     {
         AmiParser.ProcessListSync();
@@ -109,6 +121,7 @@ public class Tests
     }
 
     [Test]
+    [Ignore(DeadMockyFixture)]
     public void TestSignals()
     {
         

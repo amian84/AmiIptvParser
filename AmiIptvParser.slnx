@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AmiIptvParser/AmiIptvParser.csproj" />
+  <Project Path="UnitTest/UnitTest.csproj" />
+</Solution>

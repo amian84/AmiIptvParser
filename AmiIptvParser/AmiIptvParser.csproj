@@ -1,24 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <!-- Nullable stays off until the phase 2 API redesign; enabling it now is about 25 CS86xx warnings. -->
         <Nullable>disable</Nullable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.0.2</PackageVersion>
+        <IsPackable>true</IsPackable>
+        <PackageId>AmiIptvParser</PackageId>
+        <Version>0.1.0</Version>
         <Title>AmiIptvParser</Title>
         <Authors>David Amian</Authors>
-        <Description>A IptvParser library for parser and manage iptv list in m3u8 format</Description>
-        <Copyright>GPL-3.0 License</Copyright>
+        <Description>Library to parse and manage IPTV playlists in M3U/M3U8 format.</Description>
+        <Copyright>Copyright (c) 2022 David Amian</Copyright>
+        <PackageTags>iptv;m3u;m3u8;playlist;parser</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/amian84/AmiIptvParser</PackageProjectUrl>
-        <PackageLicenseUrl></PackageLicenseUrl>
         <RepositoryUrl>https://github.com/amian84/AmiIptvParser</RepositoryUrl>
-        <RepositoryType>Git</RepositoryType>
-        <PackageReleaseNotes>First version</PackageReleaseNotes>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageReleaseNotes>Retarget to .NET 10 and relicense as MIT. Public API unchanged.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="PlaylistsNET" Version="1.1.3" />
+      <PackageReference Include="PlaylistsNET" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+        <_Parameter1>UnitTest</_Parameter1>
+      </AssemblyAttribute>
     </ItemGroup>
 
 </Project>
