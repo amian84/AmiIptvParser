@@ -10,7 +10,10 @@ public sealed record M3uPlaylist
 {
     /// <summary>Creates a playlist.</summary>
     /// <param name="entries">Entries in file order. Numbers start at 1. A default array is rejected.</param>
-    /// <param name="headerAttributes">Attributes from the <c>#EXTM3U</c> line. Empty when the header has none.</param>
+    /// <param name="headerAttributes">
+    /// Attributes from the <c>#EXTM3U</c> line. Keys produced by the parser are lowercase.
+    /// Empty when the header has none.
+    /// </param>
     public M3uPlaylist(
         ImmutableArray<PlaylistEntry> entries,
         ImmutableDictionary<string, string> headerAttributes)
@@ -28,7 +31,10 @@ public sealed record M3uPlaylist
     /// <summary>Entries in file order. Numbers start at 1.</summary>
     public ImmutableArray<PlaylistEntry> Entries { get; }
 
-    /// <summary>Attributes from the <c>#EXTM3U</c> line. Empty when the header has none.</summary>
+    /// <summary>
+    /// Attributes from the <c>#EXTM3U</c> line. Keys produced by the parser are lowercase.
+    /// Empty when the header has none.
+    /// </summary>
     public ImmutableDictionary<string, string> HeaderAttributes { get; }
 
     /// <summary>Compares playlists by value, including entry and header content.</summary>

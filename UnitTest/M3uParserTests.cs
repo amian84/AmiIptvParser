@@ -233,6 +233,31 @@ public sealed class M3uParserTests
     }
 
     [Fact]
+    public void Should_CompareEqual_When_AttributeKeysDifferOnlyByCase()
+    {
+        var lower = M3uParser.Parse("""
+            #EXTM3U url-tvg="HTTP://Example.Test/EPG.xml"
+            #EXTINF:-1 tvg-id="Channel.One" tvg-name="News",News
+            http://example.test/news
+            """);
+        var upper = M3uParser.Parse("""
+            #EXTM3U URL-TVG="HTTP://Example.Test/EPG.xml"
+            #EXTINF:-1 TVG-ID="Channel.One" TVG-NAME="News",News
+            http://example.test/news
+            """);
+
+        lower.Should().Be(upper);
+        lower.GetHashCode().Should().Be(upper.GetHashCode());
+        upper.HeaderAttributes.Should().ContainKey("url-tvg")
+            .WhoseValue.Should().Be("HTTP://Example.Test/EPG.xml");
+        var entry = upper.Entries.Should().ContainSingle().Subject;
+        entry.Attributes.Should().ContainKey("tvg-id").WhoseValue.Should().Be("Channel.One");
+        entry.Attributes.Should().ContainKey("tvg-name").WhoseValue.Should().Be("News");
+        entry.TvgId.Should().Be("Channel.One");
+        entry.TvgName.Should().Be("News");
+    }
+
+    [Fact]
     public void Should_UseCustomKind_When_ParseReceivesAClassifier()
     {
         var playlist = M3uParser.Parse(LiveChannel, new FixedKindClassifier(ContentKind.Movie));

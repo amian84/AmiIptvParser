@@ -6,7 +6,8 @@ namespace AmiIptvParser;
 
 /// <summary>
 /// Parses M3U and M3U8 text. Entries without attributes are kept. The title is the text after
-/// the first comma that sits outside quotes. A leading byte-order mark is accepted.
+/// the first comma that sits outside quotes. Attribute keys are stored lowercase; values are
+/// kept as written. A leading byte-order mark is accepted.
 /// An <c>#EXTINF</c> that never gets a URI is dropped. Overloads without a classifier use
 /// <see cref="DefaultContentKindClassifier"/>.
 /// </summary>

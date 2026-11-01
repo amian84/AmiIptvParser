@@ -7,7 +7,7 @@ namespace AmiIptvParser;
 internal sealed partial class M3uParseState
 {
     private readonly IContentKindClassifier _classifier;
-    private readonly Dictionary<string, string> _header = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> _header = new(StringComparer.Ordinal);
     private Dictionary<string, string>? _pendingAttributes;
     private string _pendingTitle = string.Empty;
     private string? _extGrp;
@@ -25,7 +25,7 @@ internal sealed partial class M3uParseState
     public ImmutableDictionary<string, string> HeaderAttributes =>
         _header.Count == 0
             ? ImmutableDictionary<string, string>.Empty
-            : _header.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
+            : _header.ToImmutableDictionary(StringComparer.Ordinal);
 
     public PlaylistEntry? Consume(string line)
     {
@@ -68,7 +68,7 @@ internal sealed partial class M3uParseState
     private void BeginEntry(string rest)
     {
         _hasPending = true;
-        _pendingAttributes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        _pendingAttributes = new Dictionary<string, string>(StringComparer.Ordinal);
         var span = rest.AsSpan().TrimStart();
         var consumed = ReadDuration(span, out _pendingDuration);
         var afterDuration = span[consumed..].TrimStart();
@@ -213,7 +213,7 @@ internal sealed partial class M3uParseState
     {
         foreach (Match match in AttributePattern().Matches(region))
         {
-            target[match.Groups[1].Value] = match.Groups[2].Value;
+            target[match.Groups[1].Value.ToLowerInvariant()] = match.Groups[2].Value;
         }
     }
 
@@ -224,7 +224,7 @@ internal sealed partial class M3uParseState
             return ImmutableDictionary<string, string>.Empty;
         }
 
-        return attributes.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
+        return attributes.ToImmutableDictionary(StringComparer.Ordinal);
     }
 
     private static string? Optional(ImmutableDictionary<string, string> attributes, string key)

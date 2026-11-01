@@ -20,7 +20,7 @@ public sealed record PlaylistEntry
     /// <param name="kind">Live, movie, or episode.</param>
     /// <param name="attributes">
     /// Every <c>key="value"</c> attribute from the <c>#EXTINF</c> line.
-    /// Null is stored as an empty dictionary.
+    /// Keys produced by the parser are lowercase. Null is stored as an empty dictionary.
     /// </param>
     public PlaylistEntry(
         int number,
@@ -80,7 +80,10 @@ public sealed record PlaylistEntry
     /// <summary>Live, movie, or episode. The parser sets this with the active <see cref="IContentKindClassifier"/>.</summary>
     public ContentKind Kind { get; }
 
-    /// <summary>Every <c>key="value"</c> attribute from the <c>#EXTINF</c> line. Never null.</summary>
+    /// <summary>
+    /// Every <c>key="value"</c> attribute from the <c>#EXTINF</c> line.
+    /// Keys produced by the parser are lowercase. Never null.
+    /// </summary>
     public ImmutableDictionary<string, string> Attributes { get; }
 
     /// <summary>Compares entries by value, including attribute content.</summary>
