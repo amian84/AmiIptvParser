@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.Json;
 using AmiIptvParser;
 using AwesomeAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace UnitTest;
 
@@ -10,17 +10,20 @@ public sealed class AmiParserTests
 {
     // run.mocky.io no longer serves this playlist (TLS / connection failure).
     // ProcessListSync/Async are the only callers that download it. Initializer does not.
-    // Ignored until a later phase replaces them with an embedded M3U fixture.
+    // Skipped until phase 3 replaces the download with an in-memory playlist. Do not embed an M3U.
     private const string MockyPlaylistUrl =
         "https://run.mocky.io/v3/e68af937-3b8f-4c8a-91d6-ebe27ed1c17b";
 
     private const string DeadMockyFixture =
-        "Ignored: downloads " + MockyPlaylistUrl
+        "RC-04: skipped until phase 3. Downloads " + MockyPlaylistUrl
         + ", which no longer serves the M3U fixture (TLS/connection failure). "
-        + "Kept until an in-memory playlist replaces the network call. Parser code is unchanged.";
+        + "An in-memory playlist replaces the network call in phase 3; the M3U is not embedded.";
 
-    [SetUp]
-    public void Setup()
+    private const string DeadMockyAndWaitOneFixture =
+        DeadMockyFixture
+        + " RC-05: the WaitOne signal path stays skipped until phase 3 and is not rewritten.";
+
+    public AmiParserTests()
     {
         var testListUrl = new UrlObject
         {
@@ -31,8 +34,7 @@ public sealed class AmiParserTests
         AmiParser.Initializer(testListUrl, loadCache: false);
     }
 
-    [Test]
-    [Ignore(DeadMockyFixture)]
+    [Fact(Skip = DeadMockyFixture)]
     public void Should_ReturnChannels_When_PlaylistIsProcessed()
     {
         AmiParser.ProcessListSync();
@@ -40,8 +42,7 @@ public sealed class AmiParserTests
         AmiParser.GetAllChannels().Should().NotBeEmpty();
     }
 
-    [Test]
-    [Ignore(DeadMockyFixture)]
+    [Fact(Skip = DeadMockyFixture)]
     public void Should_ReturnCanal4_When_ChannelNumberIs3()
     {
         AmiParser.ProcessListSync();
@@ -49,8 +50,7 @@ public sealed class AmiParserTests
         AmiParser.GetChannelNumber(3).Title.Should().Be("Canal4");
     }
 
-    [Test]
-    [Ignore(DeadMockyFixture)]
+    [Fact(Skip = DeadMockyFixture)]
     public void Should_ReturnFourGroups_When_PlaylistIsProcessed()
     {
         AmiParser.ProcessListSync();
@@ -58,8 +58,7 @@ public sealed class AmiParserTests
         AmiParser.GetAllGroups().Should().HaveCount(4);
     }
 
-    [Test]
-    [Ignore(DeadMockyFixture)]
+    [Fact(Skip = DeadMockyFixture)]
     public void Should_ReturnTwoShowGroups_When_PlaylistIsProcessed()
     {
         AmiParser.ProcessListSync();
@@ -67,7 +66,7 @@ public sealed class AmiParserTests
         AmiParser.GetAllShowsGroups().Should().HaveCount(2);
     }
 
-    [Test]
+    [Fact]
     public void Should_LoadGroupsAndOneMovie_When_CacheStreamIsRead()
     {
         var channels = new List<ChannelInfo>
@@ -87,7 +86,7 @@ public sealed class AmiParserTests
         AmiParser.GetMovies().Should().ContainSingle();
     }
 
-    [Test]
+    [Fact]
     public void Should_ReturnSeenMovie_When_CacheContainsSeenInfo()
     {
         var channels = new List<ChannelInfo>
@@ -114,8 +113,7 @@ public sealed class AmiParserTests
         seen.Title.Should().Be("Mov2");
     }
 
-    [Test]
-    [Ignore(DeadMockyFixture)]
+    [Fact(Skip = DeadMockyAndWaitOneFixture)]
     public void Should_SignalStartAndEnd_When_ProcessListAsyncRuns()
     {
         var are = new AutoResetEvent(false);
