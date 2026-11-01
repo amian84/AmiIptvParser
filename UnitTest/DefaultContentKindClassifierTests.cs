@@ -64,11 +64,12 @@ public sealed class DefaultContentKindClassifierTests
         Classify("http://example.test/live/42", "News S01E02").Should().Be(ContentKind.Live);
     }
 
+    [Fact]
+    public void Should_ReturnLive_When_ExtensionIsTransportStream()
+    {
+        Classify("http://example.test/live/channel.ts", "News").Should().Be(ContentKind.Live);
+    }
+
     private ContentKind Classify(string url, string title)
-        => _classifier.Classify(new PlaylistEntry
-        {
-            Number = 1,
-            Title = title,
-            Url = new Uri(url, UriKind.RelativeOrAbsolute),
-        });
+        => _classifier.Classify(new PlaylistEntry(1, title, new Uri(url, UriKind.RelativeOrAbsolute)));
 }

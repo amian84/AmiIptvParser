@@ -84,7 +84,7 @@ public sealed partial class PlaylistClient
         var playlist = await M3uParser.ParseAsync(stream, cancellationToken).ConfigureAwait(false);
         if (_logger is { } loadedLogger && loadedLogger.IsEnabled(LogLevel.Debug))
         {
-            LogLoaded(loadedLogger, playlist.Entries.Count);
+            LogLoaded(loadedLogger, playlist.Entries.Length);
         }
 
         return playlist;

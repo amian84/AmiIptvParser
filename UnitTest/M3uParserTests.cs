@@ -212,6 +212,97 @@ public sealed class M3uParserTests
         act.Should().Throw<PlaylistFormatException>();
     }
 
+    [Fact]
+    public void Should_ComparePlaylistsByContent_When_InstancesDiffer()
+    {
+        const string Text = """
+            #EXTM3U url-tvg="http://example.test/epg.xml" refresh="3600"
+            #EXTINF:-1 tvg-id="n" tvg-name="News" group-title="News",News
+            http://example.test/news
+            """;
+
+        var left = M3uParser.Parse(Text);
+        var right = M3uParser.Parse(Text);
+
+        ReferenceEquals(left.HeaderAttributes, right.HeaderAttributes).Should().BeFalse();
+        ReferenceEquals(left.Entries[0].Attributes, right.Entries[0].Attributes).Should().BeFalse();
+        left.Should().Be(right);
+        left.GetHashCode().Should().Be(right.GetHashCode());
+        left.Entries[0].Should().Be(right.Entries[0]);
+        left.Entries[0].GetHashCode().Should().Be(right.Entries[0].GetHashCode());
+    }
+
+    [Fact]
+    public void Should_UseCustomKind_When_ParseReceivesAClassifier()
+    {
+        var playlist = M3uParser.Parse(LiveChannel, new FixedKindClassifier(ContentKind.Movie));
+
+        playlist.Entries.Should().ContainSingle().Which.Kind.Should().Be(ContentKind.Movie);
+    }
+
+    [Fact]
+    public void Should_UseCustomKind_When_TextReaderParseReceivesAClassifier()
+    {
+        using var reader = new StringReader(LiveChannel);
+
+        var playlist = M3uParser.Parse(reader, new FixedKindClassifier(ContentKind.Movie));
+
+        playlist.Entries.Should().ContainSingle().Which.Kind.Should().Be(ContentKind.Movie);
+    }
+
+    [Fact]
+    public async Task Should_UseCustomKind_When_ParseAsyncReceivesAClassifier()
+    {
+        using var stream = StreamOf(Encoding.UTF8, LiveChannel);
+
+        var playlist = await M3uParser.ParseAsync(
+            stream,
+            new FixedKindClassifier(ContentKind.Movie),
+            TestContext.Current.CancellationToken);
+
+        playlist.Entries.Should().ContainSingle().Which.Kind.Should().Be(ContentKind.Movie);
+    }
+
+    [Fact]
+    public async Task Should_UseCustomKind_When_ParseEntriesAsyncReceivesAClassifier()
+    {
+        using var stream = StreamOf(Encoding.UTF8, LiveChannel);
+        var entries = new List<PlaylistEntry>();
+        await foreach (var entry in M3uParser.ParseEntriesAsync(
+                           stream,
+                           new FixedKindClassifier(ContentKind.Episode),
+                           TestContext.Current.CancellationToken))
+        {
+            entries.Add(entry);
+        }
+
+        entries.Should().ContainSingle().Which.Kind.Should().Be(ContentKind.Episode);
+    }
+
+    [Fact]
+    public void Should_Throw_When_ClassifierIsNull()
+    {
+        var act = () => M3uParser.Parse(LiveChannel, null!);
+
+        act.Should().Throw<ArgumentNullException>();
+    }
+
+    [Fact]
+    public async Task Should_Throw_When_ParseAsyncClassifierIsNull()
+    {
+        using var stream = StreamOf(Encoding.UTF8, LiveChannel);
+
+        var act = async () => await M3uParser.ParseAsync(stream, null!, TestContext.Current.CancellationToken);
+
+        await act.Should().ThrowAsync<ArgumentNullException>();
+    }
+
+    private const string LiveChannel = """
+        #EXTM3U
+        #EXTINF:-1,News
+        http://example.test/live
+        """;
+
     private static MemoryStream StreamOf(Encoding encoding, string text)
     {
         var preamble = encoding.GetPreamble();
@@ -220,5 +311,21 @@ public sealed class M3uParserTests
         preamble.CopyTo(bytes, 0);
         body.CopyTo(bytes, preamble.Length);
         return new MemoryStream(bytes);
+    }
+
+    private sealed class FixedKindClassifier : IContentKindClassifier
+    {
+        private readonly ContentKind _kind;
+
+        public FixedKindClassifier(ContentKind kind)
+        {
+            _kind = kind;
+        }
+
+        public ContentKind Classify(PlaylistEntry entry)
+        {
+            ArgumentNullException.ThrowIfNull(entry);
+            return _kind;
+        }
     }
 }

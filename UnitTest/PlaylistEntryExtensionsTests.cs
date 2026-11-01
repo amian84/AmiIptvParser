@@ -56,12 +56,5 @@ public sealed class PlaylistEntryExtensionsTests
     }
 
     private static PlaylistEntry BuildEntry(int number, string title, string? group, ContentKind kind)
-        => new()
-        {
-            Number = number,
-            Title = title,
-            Url = new Uri($"http://example.test/{number}"),
-            Group = group,
-            Kind = kind,
-        };
+        => new(number, title, new Uri($"http://example.test/{number}"), group: group, kind: kind);
 }

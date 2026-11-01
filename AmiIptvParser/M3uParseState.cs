@@ -1,4 +1,4 @@
-using System.Collections.Frozen;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -6,8 +6,7 @@ namespace AmiIptvParser;
 
 internal sealed partial class M3uParseState
 {
-    private static readonly DefaultContentKindClassifier Classifier = new();
-
+    private readonly IContentKindClassifier _classifier;
     private readonly Dictionary<string, string> _header = new(StringComparer.OrdinalIgnoreCase);
     private Dictionary<string, string>? _pendingAttributes;
     private string _pendingTitle = string.Empty;
@@ -17,10 +16,16 @@ internal sealed partial class M3uParseState
     private bool _hasPending;
     private int _nextNumber = 1;
 
-    public FrozenDictionary<string, string> HeaderAttributes =>
+    public M3uParseState(IContentKindClassifier classifier)
+    {
+        ArgumentNullException.ThrowIfNull(classifier);
+        _classifier = classifier;
+    }
+
+    public ImmutableDictionary<string, string> HeaderAttributes =>
         _header.Count == 0
-            ? FrozenDictionary<string, string>.Empty
-            : _header.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+            ? ImmutableDictionary<string, string>.Empty
+            : _header.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
 
     public PlaylistEntry? Consume(string line)
     {
@@ -95,23 +100,21 @@ internal sealed partial class M3uParseState
         }
 
         var attributes = Publish(_pendingAttributes);
-        var draft = new PlaylistEntry
-        {
-            Number = _nextNumber,
-            Title = _pendingTitle,
-            Url = url,
-            TvgId = Optional(attributes, "tvg-id"),
-            TvgName = Optional(attributes, "tvg-name"),
-            LogoUrl = Optional(attributes, "tvg-logo"),
-            Group = Optional(attributes, "group-title") ?? NullIfBlank(_extGrp),
-            Duration = _pendingDuration,
-            Kind = ContentKind.Live,
-            Attributes = attributes,
-        };
+        var draft = new PlaylistEntry(
+            _nextNumber,
+            _pendingTitle,
+            url,
+            Optional(attributes, "tvg-id"),
+            Optional(attributes, "tvg-name"),
+            Optional(attributes, "tvg-logo"),
+            Optional(attributes, "group-title") ?? NullIfBlank(_extGrp),
+            _pendingDuration,
+            ContentKind.Live,
+            attributes);
 
         ClearPending();
         _nextNumber++;
-        return draft with { Kind = Classifier.Classify(draft) };
+        return draft.WithKind(_classifier.Classify(draft));
     }
 
     private void ClearPending()
@@ -214,17 +217,17 @@ internal sealed partial class M3uParseState
         }
     }
 
-    private static FrozenDictionary<string, string> Publish(Dictionary<string, string>? attributes)
+    private static ImmutableDictionary<string, string> Publish(Dictionary<string, string>? attributes)
     {
         if (attributes is null || attributes.Count == 0)
         {
-            return FrozenDictionary<string, string>.Empty;
+            return ImmutableDictionary<string, string>.Empty;
         }
 
-        return attributes.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+        return attributes.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
     }
 
-    private static string? Optional(FrozenDictionary<string, string> attributes, string key)
+    private static string? Optional(ImmutableDictionary<string, string> attributes, string key)
     {
         if (!attributes.TryGetValue(key, out var value) || string.IsNullOrWhiteSpace(value))
         {

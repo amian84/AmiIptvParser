@@ -33,7 +33,7 @@ public sealed class PlaylistClientTests
     {
         var handler = new RecordingHandler(HttpStatusCode.OK, PlaylistBody);
         using var provider = TestClients.CreateProvider(handler);
-        var options = new PlaylistClientOptions { UserAgent = "CustomPlayer/2" };
+        var options = new PlaylistClientOptions("CustomPlayer/2");
         var client = new PlaylistClient(TestClients.CreateHttpClient(provider), options);
 
         await client.LoadAsync(
@@ -95,7 +95,7 @@ public sealed class PlaylistClientTests
 
         var act = () => new PlaylistClient(
             TestClients.CreateHttpClient(provider),
-            new PlaylistClientOptions { UserAgent = "bad\r\nX" });
+            new PlaylistClientOptions("bad\r\nX"));
 
         act.Should().Throw<ArgumentException>();
     }
