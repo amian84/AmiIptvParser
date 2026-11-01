@@ -3,6 +3,8 @@
     <PropertyGroup>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        <!-- CA1707 rejects Should_When_ names; bundleport-dotnet-AGENTS.md requires them. -->
+        <NoWarn>$(NoWarn);CA1707</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -10,6 +12,7 @@
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="AwesomeAssertions" />
     </ItemGroup>
 
     <ItemGroup>

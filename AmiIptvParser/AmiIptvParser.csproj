@@ -18,7 +18,7 @@
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <PackageReleaseNotes>Retarget to .NET 10 and relicense as MIT. Public API unchanged.</PackageReleaseNotes>
+        <PackageReleaseNotes>Retarget to net10.0 (drops net6.0) and relicense as MIT. Public API unchanged.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,9 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-        <_Parameter1>UnitTest</_Parameter1>
-      </AssemblyAttribute>
+      <InternalsVisibleTo Include="UnitTest" />
     </ItemGroup>
 
 </Project>
