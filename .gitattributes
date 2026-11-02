@@ -1,0 +1,2 @@
+UnitTest/Fixtures/crlf.m3u text eol=crlf
+UnitTest/Fixtures/bom.m3u binary
