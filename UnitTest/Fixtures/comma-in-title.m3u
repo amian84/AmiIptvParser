@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:-1 tvg-name="Hello, World" group-title="A, B",Actual, Title
+http://example.test/a

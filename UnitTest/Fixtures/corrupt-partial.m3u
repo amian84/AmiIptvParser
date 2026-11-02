@@ -1,0 +1,8 @@
+#EXTM3U
+http://example.test/orphan-without-extinf
+# comment ignored
+#EXTINF:-1,Dropped because the next tag replaces it
+#EXTINF:-1 group-title="News",Kept
+http://example.test/kept
+
+#EXTINF:-1,Dangling without a url

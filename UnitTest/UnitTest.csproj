@@ -11,12 +11,22 @@
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="NSubstitute" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AmiIptvParser\AmiIptvParser.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fixtures\**\*.m3u" LogicalName="Fixtures.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Fixtures\**\*.m3u8" LogicalName="Fixtures.%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
 </Project>
