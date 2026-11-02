@@ -4,20 +4,24 @@
     <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>AmiIptvParser</PackageId>
-    <Version>1.0.0</Version>
     <Title>AmiIptvParser</Title>
     <Authors>David Amian</Authors>
     <Description>Parse IPTV playlists in M3U and M3U8 format.</Description>
     <Copyright>Copyright (c) 2022 David Amian</Copyright>
     <PackageTags>iptv;m3u;m3u8;playlist;parser</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/amian84/AmiIptvParser</PackageProjectUrl>
     <RepositoryUrl>https://github.com/amian84/AmiIptvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>portable</DebugType>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageReleaseNotes>Breaking 1.0 API: dependency-free M3U parser, immutable entries, and PlaylistClient over an injected HttpClient. Removes the static AmiParser facade, disk cache, and PlaylistsNET.</PackageReleaseNotes>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+    <PackageReleaseNotes>1.0 replaces 0.0.x. https://github.com/amian84/AmiIptvParser/blob/main/CHANGELOG.md. Dependency-free M3U parser, immutable entries, and PlaylistClient over an injected HttpClient.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +30,18 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MinVer">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
